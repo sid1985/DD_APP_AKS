@@ -1,4 +1,6 @@
 #!/bin/bash
+# s.bhatt //to perform some very basic initial setup
+# need to run this if cluster is already provisioned 
 
 echo "Defining variables..."
 export RESOURCE_GROUP_NAME=ideate-aks-$RANDOM
