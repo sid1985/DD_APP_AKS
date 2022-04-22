@@ -1,36 +1,79 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Build and push the latest build to staging
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  build_push_image:
+    runs-on: ubuntu-20.04
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+#       - uses: actions/checkout@v2
+#       - name: Set up Buildx
+#         uses: docker/setup-buildx-action@v1
+        
+#       - name: Docker Login
+#         uses: docker/login-action@v1
+#         with:
+#           registry: ${{ secrets.ACR_NAME }}
+#           username: ${{ secrets.ACR_LOGIN }}
+#           password: ${{ secrets.ACR_PASSWORD }}
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+#       - name: Build and push staging images
+#         uses: docker/build-push-action@v2
+#         with:
+#           context: .
+#           tags: ${{secrets.ACR_NAME}}/<APPNAME-TEMPLATE>:latest
+#           push: true
+          
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: build_push_image # Will wait for the execution of the previous job
+    
+     steps:
+#       - uses: actions/checkout@v2   
+        
+      - name: Get AKS Credentials
+        uses: Azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} # default is
+          resource-group: ${{ secrets.RESOURCE_GROUP_NAME }} # optional, default is
+          cluster-name: contoso-video # optional, default is
+          
+      - name: Kubectl tool installer
+        uses: Azure/setup-kubectl@v2.1
+        with:
+          version: v1.22.2 # default is latest
+          
+#       - name: Docker Login (ACR connectivity)
+#         uses: docker/login-action@v1
+#         with:
+#           registry: ${{ secrets.ACR_NAME }}
+#           username: ${{ secrets.ACR_LOGIN }}
+#           password: ${{ secrets.ACR_PASSWORD }}
+          
+#       - name: application deployment Commands 
+#         run: |
+#            # kubectl create ns stage
+#             kubectl get ns
+#             echo "deploying to aks"
+#             cd ./kubernetes/
+#             kubectl apply -f . -n stage   
+            
+#       - name: Deploy to Kubernetes cluster
+#         uses: Azure/k8s-deploy@v3.1
+#         with:
+#           namespace: stage # optional
+#           manifests: kubernetes/
+#           images: contosocontainerregistry7860.azurecr.io/contoso-website:latest # optional
+#           imagepullsecrets: true # optional
+#           pull-images: default # optional, default is true
+#           strategy: default # optional, default is none
+#           route-method: default # optional, default is service
+#           action: default # default is deploy
+#           force: false # optional
+#           # Github token
+#           token: ${{ github.token }} # default is ${{ github.token }}
