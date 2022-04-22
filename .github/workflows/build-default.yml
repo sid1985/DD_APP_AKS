@@ -31,21 +31,21 @@ jobs:
           
   deploy:
     runs-on: ubuntu-20.04
-    needs: build_push_image # Will wait for the execution of the previous job
+    # needs: build_push_image # Will wait for the execution of the previous job
     
-     steps:
-#       - uses: actions/checkout@v2   
+    steps:
+       - uses: actions/checkout@v2   
         
-      - name: Get AKS Credentials
-        uses: Azure/aks-set-context@v1
-        with:
+       - name: Get AKS Credentials
+         uses: Azure/aks-set-context@v1
+         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} # default is
           resource-group: ${{ secrets.RESOURCE_GROUP_NAME }} # optional, default is
           cluster-name: contoso-video # optional, default is
           
-      - name: Kubectl tool installer
-        uses: Azure/setup-kubectl@v2.1
-        with:
+       - name: Kubectl tool installer
+         uses: Azure/setup-kubectl@v2.1
+         with:
           version: v1.22.2 # default is latest
           
 #       - name: Docker Login (ACR connectivity)
@@ -55,13 +55,13 @@ jobs:
 #           username: ${{ secrets.ACR_LOGIN }}
 #           password: ${{ secrets.ACR_PASSWORD }}
           
-#       - name: application deployment Commands 
-#         run: |
-#            # kubectl create ns stage
-#             kubectl get ns
-#             echo "deploying to aks"
-#             cd ./kubernetes/
-#             kubectl apply -f . -n stage   
+       - name: application deployment Commands 
+         run: |
+           # kubectl create ns stage
+           # kubectl get ns
+            echo "deploying to aks"
+            cd ./kubernetes/
+            kubectl apply -f . 
             
 #       - name: Deploy to Kubernetes cluster
 #         uses: Azure/k8s-deploy@v3.1
