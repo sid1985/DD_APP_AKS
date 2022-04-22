@@ -7,8 +7,8 @@ on:
     branches: [ master ]
 
 jobs:
-#   build_push_image:
-#     runs-on: ubuntu-20.04
+  build_push_image:
+    runs-on: ubuntu-20.04
 
 #     steps:
 #       - uses: actions/checkout@v2
@@ -61,7 +61,8 @@ jobs:
            # kubectl get ns
             echo "deploying to aks"
             cd ./kubernetes/
-            kubectl apply -f . 
+            kubectl get all
+            # kubectl apply -f . 
             
 #       - name: Deploy to Kubernetes cluster
 #         uses: Azure/k8s-deploy@v3.1
