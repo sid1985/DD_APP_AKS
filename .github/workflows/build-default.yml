@@ -7,10 +7,10 @@ on:
     branches: [ master ]
 
 jobs:
-  build_push_image:
-    runs-on: ubuntu-20.04
+#   build_push_image:
+#     runs-on: ubuntu-20.04
 
-    steps:
+#     steps:
 #       - uses: actions/checkout@v2
 #       - name: Set up Buildx
 #         uses: docker/setup-buildx-action@v1
@@ -41,7 +41,7 @@ jobs:
          with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} # default is
           resource-group: ${{ secrets.RESOURCE_GROUP_NAME }} # optional, default is
-          cluster-name: contoso-video # optional, default is
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }} # optional, default is
           
        - name: Kubectl tool installer
          uses: Azure/setup-kubectl@v2.1
